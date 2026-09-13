@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Card with QR Popup</title>
+
+    <!-- jQuery (must load before script.js) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <!-- ============ PROFILE CARD ============ -->
+    <div class="profile-card" id="profileCard">
+        <!-- Circular profile image -->
+        <img class="profile-image" id="profileImage"
+            src="https://ui-avatars.com/api/?background=random&size=160&name=Alex+Morgan" alt="Profile photo" />
+
+        <!-- Name -->
+        <h2 class="profile-name">Alex Morgan</h2>
+
+        <!-- Address -->
+        <div class="profile-address">
+            <span class="icon">📍</span>
+            <span>42 Oak Street, Springfield, IL</span>
+        </div>
+
+        <!-- Other details -->
+        <div class="profile-details">
+            <p><span class="label">📧 Email</span><span class="value">alex.m@example.com</span></p>
+            <p><span class="label">📞 Phone</span><span class="value">+1 (555) 123-4567</span></p>
+            <p><span class="label">💼 Role</span><span class="value">Product Designer</span></p>
+        </div>
+
+        <!-- QR button -->
+        <button class="qr-btn" id="openQrBtn">
+            <span class="icon">🔲</span>
+            <span>Show QR Code</span>
+        </button>
+    </div>
+
+    <!-- ============ QR POPUP ============ -->
+    <div class="qr-popup-overlay" id="qrPopup">
+        <div class="qr-popup-content">
+            <h3>Your Profile QR</h3>
+
+            <div class="qr-image">
+                <img id="qrImage"
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Alex%20Morgan%20Profile"
+                    alt="Profile QR code" />
+            </div>
+
+            <p>Scan to connect or save contact</p>
+
+            <button class="close-popup-btn" id="closeQrBtn">Close</button>
+        </div>
+    </div>
+
+    <!-- Custom JS (after jQuery) -->
+    <script src="script.js"></script>
+</body>
+
+</html>
