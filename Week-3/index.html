@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Card with QR Popup</title>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #edeef0;
+            padding: 16px;
+        }
+
+        /* card container – background changes via JS */
+        .profile-card {
+            background: #ffffff;
+            /* default, will be changed by JS */
+            width: 100%;
+            max-width: 380px;
+            border-radius: 32px;
+            padding: 28px 24px 24px;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.15), 0 6px 12px rgba(0, 0, 0, 0.05);
+            transition: background 0.4s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            color: #1e1e2a;
+        }
+
+        /* circular profile image */
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ffffff;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+            margin-bottom: 16px;
+            background: #d9d9d9;
+            transition: border-color 0.3s ease;
+        }
+
+        /* name & details */
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+
+        .profile-address {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #4a4a5a;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 6px 14px;
+            border-radius: 40px;
+            backdrop-filter: blur(2px);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .profile-details {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 14px 0 22px;
+            color: #2c2c3a;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 12px 16px;
+            border-radius: 24px;
+            width: 100%;
+            backdrop-filter: blur(2px);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .profile-details p {
+            margin: 6px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 6px;
+        }
+
+        .profile-details .label {
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .profile-details .value {
+            font-weight: 500;
+            word-break: break-word;
+            text-align: right;
+        }
+
+        /* QR button */
+        .qr-btn {
+            background: #1e1e2a;
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+            width: 100%;
+            letter-spacing: 0.3px;
+            margin-top: 6px;
+        }
+
+        .qr-btn:hover {
+            background: #2d2d3f;
+            transform: scale(1.02);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .qr-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* ----- POPUP (QR modal) ----- */
+        .qr-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+            display: none;
+            /* hidden by default, jQuery show/hide */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 16px;
+        }
+
+        .qr-popup-content {
+            background: #ffffff;
+            border-radius: 36px;
+            padding: 32px 28px 28px;
+            max-width: 340px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.4);
+            animation: popIn 0.25s ease;
+            position: relative;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .qr-popup-content h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #1e1e2a;
+        }
+
+        .qr-image {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 16px;
+            background: #f0f0f5;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e0e0e8;
+            padding: 12px;
+        }
+
+        .qr-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .qr-popup-content p {
+            font-size: 0.95rem;
+            color: #4a4a5a;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .close-popup-btn {
+            background: #1e1e2a;
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .close-popup-btn:hover {
+            background: #2d2d3f;
+        }
+
+        .close-popup-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* dynamic color adaptation: if card is dark, adjust text */
+        .profile-card.dark-bg {
+            color: #f0f0fa;
+        }
+
+        .profile-card.dark-bg .profile-address,
+        .profile-card.dark-bg .profile-details {
+            background: rgba(0, 0, 0, 0.25);
+            color: #eaeefb;
+        }
+
+        .profile-card.dark-bg .profile-details .label {
+            opacity: 0.9;
+        }
+
+        .profile-card.dark-bg .qr-btn {
+            background: #ffffff;
+            color: #1e1e2a;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-card.dark-bg .qr-btn:hover {
+            background: #f0f0fa;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PROFILE CARD -->
+    <div class="profile-card" id="profileCard">
+        <!-- circular profile image -->
+        <img class="profile-image" src="https://ui-avatars.com/api/?background=random&size=120&name=Alex Morgan"
+            alt="Profile image" id="profileImage">
+
+        <h2 class="profile-name">Alex Morgan</h2>
+
+        <div class="profile-address">
+            <span>📍</span> 42 Oak Street, Springfield, IL
+        </div>
+
+        <div class="profile-details">
+            <p><span class="label">📧 Email</span> <span class="value">alex.m@example.com</span></p>
+            <p><span class="label">📞 Phone</span> <span class="value">+1 (555) 123-4567</span></p>
+            <p><span class="label">💼 Role</span> <span class="value">Product Designer</span></p>
+        </div>
+
+        <!-- QR code button -->
+        <button class="qr-btn" id="openQrBtn">
+            <span>🔲</span> Show QR Code
+        </button>
+    </div>
+
+    <!-- QR POPUP (hidden by default) -->
+    <div class="qr-popup-overlay" id="qrPopup">
+        <div class="qr-popup-content">
+            <h3>Your Profile QR</h3>
+            <div class="qr-image">
+                <!-- using a sample QR code; you can replace with any QR generator -->
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Alex%20Morgan%20Profile%20Card"
+                    alt="Profile QR code">
+            </div>
+            <p>Scan to connect or save contact</p>
+            <button class="close-popup-btn" id="closeQrBtn">Close</button>
+        </div>
+    </div>
+
+    <!-- JQUERY SCRIPT -->
+    <script>
+        $(document).ready(function () {
+            // ----- 1. CHANGE CARD COLOR EVERY TIME THE PAGE LOADS (enter the card) -----
+            // array of pleasant background colors
+            const colorPalette = [
+                '#ffffff',   // white
+                '#fef9e7',   // soft cream
+                '#e8f4f8',   // pale blue
+                '#f0e6f6',   // lavender mist
+                '#fde8e8',   // light rose
+                '#e6f7ec',   // mint
+                '#fff1e0',   // peach
+                '#eaeef7',   // periwinkle
+                '#f5e6d3',   // bisque
+                '#d9e9fa'    // light sky
+            ];
+
+            // pick a random color index
+            const randomIndex = Math.floor(Math.random() * colorPalette.length);
+            const randomColor = colorPalette[randomIndex];
+
+            // apply to the card
+            $('#profileCard').css('background', randomColor);
+
+            // Optional: if background is dark, add class for better contrast
+            // Convert hex to RGB to check brightness
+            function isDarkColor(hex) {
+                // remove # if present
+                hex = hex.replace('#', '');
+                const r = parseInt(hex.substring(0, 2), 16);
+                const g = parseInt(hex.substring(2, 4), 16);
+                const b = parseInt(hex.substring(4, 6), 16);
+                // perceived luminance
+                const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                return luminance < 0.5; // dark if luminance < 0.5
+            }
+
+            if (isDarkColor(randomColor)) {
+                $('#profileCard').addClass('dark-bg');
+            } else {
+                $('#profileCard').removeClass('dark-bg');
+            }
+
+            // ----- 2. QR POPUP OPEN / CLOSE HANDLERS -----
+            const $popup = $('#qrPopup');
+
+            // open popup when QR button clicked
+            $('#openQrBtn').on('click', function (e) {
+                e.preventDefault();
+                $popup.css('display', 'flex').hide().fadeIn(180);
+            });
+
+            // close popup when close button clicked OR clicking outside overlay content
+            $('#closeQrBtn').on('click', function () {
+                $popup.fadeOut(180, function () {
+                    // ensure it's display none after fade
+                    $(this).css('display', 'none');
+                });
+            });
+
+            // clicking on the overlay background (but not the content) closes popup
+            $popup.on('click', function (e) {
+                if (e.target === this) {
+                    $popup.fadeOut(180, function () {
+                        $(this).css('display', 'none');
+                    });
+                }
+            });
+
+            // optional: close with ESC key
+            $(document).on('keydown', function (e) {
+                if (e.key === 'Escape' && $popup.is(':visible')) {
+                    $popup.fadeOut(180, function () {
+                        $(this).css('display', 'none');
+                    });
+                }
+            });
+
+            // ----- 3. EXTRA: when popup is closed, card is shown (it always stays visible underneath) -----
+            // no additional action needed, but we can add a subtle effect on card when popup closes
+            $('#closeQrBtn').on('click', function () {
+                // slight highlight to card
+                $('#profileCard').css('transition', 'box-shadow 0.2s');
+                $('#profileCard').css('box-shadow', '0 20px 35px rgba(0,0,0,0.25), 0 6px 12px rgba(0,0,0,0.1)');
+                setTimeout(() => {
+                    $('#profileCard').css('box-shadow', '0 20px 35px rgba(0, 0, 0, 0.15), 0 6px 12px rgba(0, 0, 0, 0.05)');
+                }, 200);
+            });
+
+            // Also handle click on overlay (outside) for card feedback
+            $popup.on('click', function (e) {
+                if (e.target === this) {
+                    $('#profileCard').css('transition', 'box-shadow 0.2s');
+                    $('#profileCard').css('box-shadow', '0 20px 35px rgba(0,0,0,0.25), 0 6px 12px rgba(0,0,0,0.1)');
+                    setTimeout(() => {
+                        $('#profileCard').css('box-shadow', '0 20px 35px rgba(0, 0, 0, 0.15), 0 6px 12px rgba(0, 0, 0, 0.05)');
+                    }, 200);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
