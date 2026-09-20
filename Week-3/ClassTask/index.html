@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My jQuery Portfolio</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+
+<body>
+
+    <header>
+        <h1>My Portfolio</h1>
+        <p>Interactive jQuery Portfolio</p>
+    </header>
+
+    <main>
+
+        <section id="profile-card">
+
+            <!-- Profile Image -->
+            <img id="profile-photo" src="speed.jpeg" alt="My Profile Photo">
+
+            <!-- Student Name -->
+            <h2 id="student-name">Biplav Yadav</h2>
+
+            <!-- Student Bio -->
+            <div id="student-bio">
+
+                <p>
+                    Hello! My name is Biplav Yadav.
+                    I am a BSc IT student interested in
+                    web development and backend development.
+                </p>
+
+                <p>
+                    I enjoy learning programming, databases,
+                    APIs, Python, Django, JavaScript and jQuery.
+                </p>
+
+            </div>
+
+            <!-- Skills -->
+            <h3>My Skills</h3>
+
+            <ul id="skills-list">
+                <li>HTML</li>
+                <li>CSS</li>
+                <li>JavaScript</li>
+                <li>jQuery</li>
+                <li>Python</li>
+                <li>Django</li>
+            </ul>
+
+            <!-- Nickname Input -->
+            <input type="text" id="nickname-input" placeholder="Enter your nickname">
+
+            <!-- Output -->
+            <div id="output">
+                Output will appear here...
+            </div>
+
+        </section>
+
+
+        <!-- 1. GET & SET -->
+        <section class="control-section">
+
+            <h2>1. GET & SET</h2>
+
+            <button id="show-name">Show Name</button>
+            <button id="change-name">Change Name</button>
+            <button id="show-bio">Show Bio</button>
+            <button id="get-input">Get Input</button>
+            <button id="set-input">Set Input</button>
+
+        </section>
+
+
+        <!-- 2. CSS CLASSES -->
+        <section class="control-section">
+
+            <h2>2. CSS Classes</h2>
+
+            <button id="highlight-card">Highlight Card</button>
+            <button id="remove-highlight">Remove Highlight</button>
+            <button id="dark-mode">Toggle Dark Mode</button>
+            <button id="rounded-photo">Toggle Rounded</button>
+
+        </section>
+
+
+        <!-- 3. CSS METHOD -->
+        <section class="control-section">
+
+            <h2>3. CSS Method</h2>
+
+            <button id="red-background">Red Background</button>
+            <button id="reset-background">Reset Background</button>
+
+        </section>
+
+
+        <!-- 4. HIDE & SHOW -->
+        <section class="control-section">
+
+            <h2>4. Hide & Show</h2>
+
+            <button id="hide-photo">Hide Photo</button>
+            <button id="show-photo">Show Photo</button>
+            <button id="toggle-bio">Toggle Bio</button>
+
+        </section>
+
+
+        <!-- 5. FADE -->
+        <section class="control-section">
+
+            <h2>5. Fade</h2>
+
+            <button id="fade-out">Fade Out Card</button>
+            <button id="fade-in">Fade In Card</button>
+            <button id="fade-50">Fade to 50%</button>
+
+        </section>
+
+
+        <!-- 6. SLIDE -->
+        <section class="control-section">
+
+            <h2>6. Slide</h2>
+
+            <button id="slide-up">Slide Up Skills</button>
+            <button id="slide-down">Slide Down Skills</button>
+            <button id="slide-toggle">Slide Toggle Skills</button>
+
+        </section>
+
+
+        <!-- 7. ANIMATE -->
+        <section class="control-section">
+
+            <h2>7. Animate</h2>
+
+            <button id="animate-card">Animate Card</button>
+
+        </section>
+
+
+        <!-- 8. EVENTS -->
+        <section class="control-section">
+
+            <h2>8. Events</h2>
+
+            <p>
+                Hover over the profile photo to add
+                and remove the shadow effect.
+            </p>
+
+            <p>
+                Type something in the nickname input.
+                The pressed key will appear in the output.
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <p>
+            &copy; 2026 Biplav Yadav | jQuery Portfolio
+        </p>
+
+    </footer>
+
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>
